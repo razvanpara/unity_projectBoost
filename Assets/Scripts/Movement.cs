@@ -32,6 +32,7 @@ public class Movement : MonoBehaviour
         dt = Time.deltaTime;
         var playerInput = GetPlayerInput();
         ProcessInput(playerInput);
+        PlayThrustSound(playerInput);
     }
 
     internal class PlayerInput
@@ -45,9 +46,8 @@ public class Movement : MonoBehaviour
         return new PlayerInput
         {
             Thrust = Input.GetKey(KeyCode.Space),
-            RotateLeft = Input.GetKey(KeyCode.LeftArrow),
-            RotateRight = Input.GetKey(KeyCode.RightArrow)
-
+            RotateLeft = Input.GetKey(KeyCode.A),
+            RotateRight = Input.GetKey(KeyCode.D)
         };
     }
     private void ProcessInput(PlayerInput input)
@@ -55,19 +55,20 @@ public class Movement : MonoBehaviour
         ProcessThrust(input);
         ProcessRotation(input);
     }
-    private void ProcessThrust(PlayerInput input)
+    private void PlayThrustSound(PlayerInput input)
     {
         if (input.Thrust)
         {
-
-            if (!aSrc.isPlaying) aSrc.Play();
-            rb.AddRelativeForce(Vector3.up.DtV() * mainThrust);
-            Debug.Log("Going up");
+            if (!aSrc.isPlaying)
+                aSrc.Play();
         }
         else
             aSrc.Stop();
-
-
+    }
+    private void ProcessThrust(PlayerInput input)
+    {
+        if (input.Thrust)
+            rb.AddRelativeForce(Vector3.up.DtV() * mainThrust);
     }
     private void ProcessRotation(PlayerInput input)
     {
