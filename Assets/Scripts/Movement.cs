@@ -14,8 +14,12 @@ public static class DeltaTimeValuesExt
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] private float mainThrust = 1000;
-    private float rotationThrust = 90;
+    [SerializeField] float mainThrust = 1000;
+    [SerializeField] AudioClip mainEngine;
+    [SerializeField] float rotationThrust = 90;
+    [SerializeField] ParticleSystem leftThrusterParticles;
+    [SerializeField] ParticleSystem rightThrusterParticles;
+    [SerializeField] ParticleSystem mainThrusterParticles;
     private Rigidbody rb;
     private AudioSource aSrc;
     private float dt;
@@ -60,7 +64,7 @@ public class Movement : MonoBehaviour
         if (input.Thrust)
         {
             if (!aSrc.isPlaying)
-                aSrc.Play();
+                aSrc.PlayOneShot(mainEngine);
         }
         else
             aSrc.Stop();
@@ -68,14 +72,35 @@ public class Movement : MonoBehaviour
     private void ProcessThrust(PlayerInput input)
     {
         if (input.Thrust)
+        {
             rb.AddRelativeForce(Vector3.up.DtV() * mainThrust);
+            if (!mainThrusterParticles.isPlaying)
+                mainThrusterParticles.Play();
+        }
+        else
+            mainThrusterParticles.Stop();
     }
     private void ProcessRotation(PlayerInput input)
     {
         if (input.RotateLeft)
+        {
+            leftThrusterParticles.Stop();
             ApplyRotation(rotationThrust);
+            if (!rightThrusterParticles.isPlaying)
+                rightThrusterParticles.Play();
+        }
         else if (input.RotateRight)
+        {
+            rightThrusterParticles.Stop();
             ApplyRotation(-rotationThrust);
+            if (!leftThrusterParticles.isPlaying)
+                leftThrusterParticles.Play();
+        }
+        else
+        {
+            rightThrusterParticles.Stop();
+            leftThrusterParticles.Stop();
+        }
     }
     private void ApplyRotation(float rotationThisFrame)
     {
