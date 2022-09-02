@@ -23,7 +23,7 @@ public enum RotationDirection
     LEFT = 1
 }
 
-public class Movement : MonoBehaviour
+public partial class Movement : MonoBehaviour
 {
     [SerializeField] float mainThrust = 1000;
     [SerializeField] AudioClip mainEngine;
@@ -45,15 +45,8 @@ public class Movement : MonoBehaviour
     void Update()
     {
         dt = Time.deltaTime;
-        var playerInput = GetPlayerInput();
+        var playerInput = GetComponent<PlayerInput>();
         ProcessInput(playerInput);
-    }
-
-    internal class PlayerInput
-    {
-        public bool RotateLeft { get; set; }
-        public bool RotateRight { get; set; }
-        public bool Thrust { get; set; }
     }
 
     internal class AudioMapping
@@ -66,16 +59,6 @@ public class Movement : MonoBehaviour
         public AudioSource AudioSource { get; }
         public AudioClip AudioClip { get; }
         public static AudioMapping Create(AudioSource aSrc, AudioClip aClip) => new AudioMapping(aSrc, aClip);
-    }
-
-    private PlayerInput GetPlayerInput()
-    {
-        return new PlayerInput
-        {
-            Thrust = Input.GetKey(KeyCode.Space),
-            RotateLeft = Input.GetKey(KeyCode.A),
-            RotateRight = Input.GetKey(KeyCode.D)
-        };
     }
     private void ProcessInput(PlayerInput input)
     {

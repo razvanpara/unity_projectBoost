@@ -20,8 +20,10 @@ public class CollisionHandler : MonoBehaviour
     {
         aSrc = GetComponent<AudioSource>();
     }
+    
     private void OnCollisionEnter(Collision other)
     {
+        var playerInput = GetComponent<PlayerInput>();
         if (isTransitioning) return;
 
         switch (other.gameObject.tag)
@@ -33,7 +35,8 @@ public class CollisionHandler : MonoBehaviour
                 StartSuccessSequence(nextLevelDelay);
                 break;
             default:
-                StartCrashSequence(crashDelay);
+                if (!playerInput.DisableCollision)
+                    StartCrashSequence(crashDelay);
                 break;
         }
     }
@@ -56,7 +59,7 @@ public class CollisionHandler : MonoBehaviour
         GetComponent<Movement>().enabled = false;
         Invoke("LoadNextLevel", delay);
     }
-    void LoadNextLevel()
+    public void LoadNextLevel()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
