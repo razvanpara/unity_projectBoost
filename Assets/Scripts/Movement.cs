@@ -103,6 +103,7 @@ public partial class Movement : MonoBehaviour
         rb.freezeRotation = true;
         transform.Rotate(Vector3.forward.DtV() * rotationThisFrame);
         rb.freezeRotation = false;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezePositionZ;
     }
 
     private static void PlayParticles(ParticleSystem[] particles)
