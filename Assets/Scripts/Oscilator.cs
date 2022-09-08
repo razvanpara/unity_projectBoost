@@ -4,33 +4,25 @@ using UnityEngine;
 
 public class Oscilator : MonoBehaviour
 {
-    [SerializeField] float movementRate = 1F;
-    [SerializeField] float maxMove = 15f;
-    float initialPos = 0f;
-    float td = 0f;
-    bool goUp = false;
+    [SerializeField] Vector3 movementVector;
+    [SerializeField][Range(0, 1)] float movementFactor;
+    [SerializeField] float period = 2f;
+    Vector3 startingPosition;
+
     void Start()
     {
-        initialPos = transform.position.y;
+        startingPosition = transform.position;
     }
 
     void Update()
     {
-        td = Time.deltaTime;
-        float currentPos = transform.position.y;
+        float cycles = Time.time / period; // continually growing over time
 
-        if (goUp)
-        {
-            transform.Translate(Vector3.up * td * movementRate);
-            if (currentPos >= initialPos + maxMove)
-                goUp = false;
-        }
-        else
-        {
-            transform.Translate(Vector3.down * td * movementRate);
-            if (currentPos <= initialPos)
-                goUp = true;
-        }
+        const float tau = Mathf.PI * 2; // constant value of 6.283
+        
+        float rawSinWave = Mathf.Sin(cycles * tau); // going from -1 to 1
 
+        Vector3 offset = movementVector * movementFactor;
+        transform.position = startingPosition + offset * rawSinWave;
     }
 }
